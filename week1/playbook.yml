@@ -33,11 +33,15 @@
              force_basic_auth=yes
     when: not ovpn_file.stat.exists
 
-  - name: test if webmin-openvpn module is installed
-    stat: path
+  # In our previous example the openvpn gzip file was untarred on every run
+  # This time check if the dir exists and only untar if it doesn't
+  - name: test if openvpn module dir exists
+    stat: path=/usr/share/webmin/openvpn
+    register: ovpn_installed
 
   - name: install webmin openvpn
     command: /usr/share/webmin/install-module.pl /tmp/openvpn-2.6.wbm.gz
+    when: not ovpn_installed.stat.exists
 
   - name: ensure webmin is running (and enable it at boot)
     service: name=webmin state=started enabled=yes
