@@ -1,2 +1,3 @@
-- name: restart webmin
-  service: name=webmin state=restarted
+---
+- name: ensure webmin is running (and enable it at boot)
+  service: name=webmin state=started enabled=yes

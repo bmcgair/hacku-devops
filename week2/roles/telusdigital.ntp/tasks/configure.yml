@@ -1,0 +1,17 @@
+---
+- name: Configure | timezone
+  file:
+    src: "/usr/share/zoneinfo/{{ ntp_timezone }}"
+    dest: /etc/localtime
+    state: link
+    force: yes
+  when: ntp_timezone is defined
+
+- name: Configure | ntp.conf
+  template:
+    src: etc/ntp.conf
+    dest: /etc/ntp.conf
+    owner: root
+    group: staff
+    mode: 0664
+  notify: service | ntp | restarted
