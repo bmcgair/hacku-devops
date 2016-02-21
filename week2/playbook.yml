@@ -35,6 +35,7 @@
 
   # In our previous example the openvpn gzip file was untarred on every run
   # This time check if the dir exists and only untar if it doesn't
+  # testing
   - name: test if openvpn module dir exists
     stat: path=/usr/share/webmin/openvpn
     register: ovpn_installed
