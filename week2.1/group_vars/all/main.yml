@@ -1,0 +1,15 @@
+---
+
+# stack defaults
+group_vars_path: "Users/billm/repos/playbooks/group_vars/"
+stack_name: "HackOregon"
+owner: "hackoregon"
+state: "present"
+disable_rollback: "yes"
+mgmt_ip: "24.21.200.124/32"
+json_template: "roles/cloudform-launch/files/vpc_build.json"
+keypair: "{{ lookup('env', 'KEYPAIR') }}"
+vpc_base: "{{ lookup('env', 'VPC_BASE') }}"
+vpc_mask: "16"
+vpc_mask_long: "255.255.0.0"
+subnet_mask: "20"

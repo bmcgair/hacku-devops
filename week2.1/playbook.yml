@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  connection: local
+
+  vars:
+    region: "{{ lookup('env', 'AWS_REGION_CODE') }}"
+    region_name: "{{ lookup('env', 'AWS_REGION_NAME') }}"
+
+  roles:
+    - cloudform-launch
