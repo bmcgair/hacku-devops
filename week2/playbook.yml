@@ -2,38 +2,8 @@
 - hosts: all
   user: ubuntu
   become: yes
-  vars:
-    my_user: "webmin"
-    my_passwd: "$6$Uyv5il87A$L.2rRNFPLIsKOxqdi3coXigOvrnSGGAtTNqQNl08ke8QTla6OgE90j52cMSDyTnVocMM7zv9.BNJzsQWeTVJJ/"
 
-  tasks:
-  - name: install whois deb package
-    apt: name=whois state=latest
-
-  - name: create webmin user
-    user: name={{my_user}} shell=/sbin/nologin  groups=admin password={{my_passwd}} createhome=no
-
-  - name: add webmin repo key
-    apt_key: url=http://www.webmin.com/jcameron-key.asc state=present
-
-  - name: add webmin repo
-    apt_repository: repo='deb http://download.webmin.com/download/repository sarge contrib' state=present update_cache=yes
-
-  - name: install webmin deb
-    apt: name=webmin state=latest force=yes
-
-  - stat: path=/tmp/openvpn-2.6.wbm.gz
-    register: ovpn
-
-  - name: download webmin openvpn module
-    get_url: url=http://www.openit.it/downloads/OpenVPNadmin/openvpn-2.6.wbm.gz
-             dest=/tmp/
-             force=no
-             force_basic_auth=yes
-    when: not ovpn.stat.exists
-
-  - name: install webmin openvpn
-    command: /usr/share/webmin/install-module.pl /tmp/openvpn-2.6.wbm.gz
-
-  - name: ensure webmin is running (and enable it at boot)
-    service: name=webmin state=started enabled=yes
+  roles:
+    - webmin
+    - telusdigital.ntp
+    - users
