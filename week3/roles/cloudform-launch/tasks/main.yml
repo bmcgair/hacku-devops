@@ -1,5 +1,5 @@
 ---
-- name: launch a cloudformations stack
+- name: launch a cloudformation stack
   cloudformation:
     stack_name="{{stack_name}}-stack"
     state="{{state}}"
@@ -12,6 +12,9 @@
       SSHLocation: "{{mgmt_ip}}"
       Owner: "{{owner}}"
       VPCName: "{{stack_name}}"
+      AvailabilityZoneA: "{{AvailabilityZoneA}}"
+      AvailabilityZoneB: "{{AvailabilityZoneB}}"
+      AvailabilityZoneC: "{{AvailabilityZoneC}}"
       CIDR: "{{vpc_base}}.0.0/{{vpc_mask}}"
       CIDRdmzA: "{{vpc_base}}.0.0/{{subnet_mask}}"
       CIDRdmzB: "{{vpc_base}}.16.0/{{subnet_mask}}"
@@ -21,9 +24,6 @@
       CIDRprivC: "{{vpc_base}}.144.0/{{subnet_mask}}"
   register: stack
 
-- debug:
-    msg: "Cloudform outputs: {{stack}}"
-
 - ec2_vpc_subnet_facts:
     region: "{{region}}"
     filters:
@@ -31,20 +31,17 @@
       "tag:Name": "dmz-A"
   register: dmza_facts
 
-- debug:
-    msg: "dmza Subnet Facts: {{dmza_facts}}"
-
-- name: update vpc_id to "{{stack.stack_outputs.VPCId}}"
+- name: update vpc id to "{{stack.stack_outputs.VPCId}}"
   replace:
-     dest: "/{{group_vars_path}}all/main.yml"
-     regexp: "^vpc_id_{{region_name}}:.*$"
-     replace: "vpc_id_{{region_name}}: {{stack.stack_outputs.VPCId}}"
+     dest: "{{playbook_dir}}/group_vars/{{region}}"
+     regexp: "^vpc_id:.*$"
+     replace: "vpc_id: {{stack.stack_outputs.VPCId}}"
 
 - name: update dmza id to "{{dmza_facts.subnets.0.id}}"
   replace:
-     dest: "/{{group_vars_path}}all/main.yml"
-     regexp: "^dmza_subnet_id_{{region_name}}:.*$"
-     replace: "dmza_subnet_id_{{region_name}}: {{dmza_facts.subnets.0.id}}"
+     dest: "{{playbook_dir}}/group_vars/{{region}}"
+     regexp: "^dmza_subnet_id:.*$"
+     replace: "dmza_subnet_id: {{dmza_facts.subnets.0.id}}"
 
 - ec2_vpc_subnet_facts:
     region: "{{region}}"
@@ -55,9 +52,9 @@
 
 - name: update dmzb id to "{{dmzb_facts.subnets.0.id}}"
   replace:
-     dest: "/{{group_vars_path}}all/main.yml"
-     regexp: "^dmzb_subnet_id_{{region_name}}:.*$"
-     replace: "dmzb_subnet_id_{{region_name}}: {{dmzb_facts.subnets.0.id}}"
+     dest: "{{playbook_dir}}/group_vars/{{region}}"
+     regexp: "^dmzb_subnet_id:.*$"
+     replace: "dmzb_subnet_id: {{dmzb_facts.subnets.0.id}}"
 
 - ec2_vpc_subnet_facts:
     region: "{{region}}"
@@ -68,9 +65,9 @@
 
 - name: update dmzc id to "{{dmzc_facts.subnets.0.id}}"
   replace:
-     dest: "/{{group_vars_path}}all/main.yml"
-     regexp: "^dmzc_subnet_id_{{region_name}}:.*$"
-     replace: "dmzc_subnet_id_{{region_name}}: {{dmzc_facts.subnets.0.id}}"
+     dest: "{{playbook_dir}}/group_vars/{{region}}"
+     regexp: "^dmzc_subnet_id:.*$"
+     replace: "dmzc_subnet_id: {{dmzc_facts.subnets.0.id}}"
 
 - ec2_vpc_subnet_facts:
     region: "{{region}}"
@@ -81,9 +78,9 @@
 
 - name: update privatea id to "{{privatea_facts.subnets.0.id}}"
   replace:
-     dest: "/{{group_vars_path}}all/main.yml"
-     regexp: "^privatea_subnet_id_{{region_name}}:.*$"
-     replace: "privatea_subnet_id_{{region_name}}: {{privatea_facts.subnets.0.id}}"
+     dest: "{{playbook_dir}}/group_vars/{{region}}"
+     regexp: "^privatea_subnet_id:.*$"
+     replace: "privatea_subnet_id: {{privatea_facts.subnets.0.id}}"
 
 - ec2_vpc_subnet_facts:
     region: "{{region}}"
@@ -94,9 +91,9 @@
 
 - name: update privateb id to "{{privateb_facts.subnets.0.id}}"
   replace:
-     dest: "/{{group_vars_path}}all/main.yml"
-     regexp: "^privateb_subnet_id_{{region_name}}:.*$"
-     replace: "privateb_subnet_id_{{region_name}}: {{privateb_facts.subnets.0.id}}"
+     dest: "{{playbook_dir}}/group_vars/{{region}}"
+     regexp: "^privateb_subnet_id:.*$"
+     replace: "privateb_subnet_id: {{privateb_facts.subnets.0.id}}"
 
 - ec2_vpc_subnet_facts:
     region: "{{region}}"
@@ -107,6 +104,6 @@
 
 - name: update privatec id to "{{privatec_facts.subnets.0.id}}"
   replace:
-     dest: "/{{group_vars_path}}all/main.yml"
-     regexp: "^privatec_subnet_id_{{region_name}}:.*$"
-     replace: "privatec_subnet_id_{{region_name}}: {{privatec_facts.subnets.0.id}}"
+     dest: "{{playbook_dir}}/group_vars/{{region}}"
+     regexp: "^privatec_subnet_id:.*$"
+     replace: "privatec_subnet_id: {{privatec_facts.subnets.0.id}}"

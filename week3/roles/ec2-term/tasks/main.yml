@@ -1,0 +1,5 @@
+---
+- name: terminating {{ec2_info.instance_ids}} in region {{region}}
+  ec2: state=absent
+       instance_ids={{ec2_info.instance_ids}}
+       region={{region}}

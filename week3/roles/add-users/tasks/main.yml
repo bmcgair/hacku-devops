@@ -1,0 +1,4 @@
+
+- name: create users
+user: name={{item.key}} shell={{item.value.shell}}  groups={{item.value.group}} password={{item.value.passwd}} createhome=yes
+with_dict: "{{my_users}}"
