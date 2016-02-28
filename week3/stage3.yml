@@ -9,7 +9,7 @@
     image_name: "aws-marketplace/amzn-ami-2015.09.f-amazon-ecs-optimized-*"
     image_owner: "679593333241"
 
-    cluster_name: "my-sad-little-cluster"
+    cluster_name: "my-ecs-cluster"
     instance_type: "t2.micro"
     instance_monitoring: "no"
     health_check_period: "300"
