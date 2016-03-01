@@ -21,6 +21,7 @@
     assign_public_ip: "{{assign_public_ip}}"
     instance_tags: "{{instance_tags}}"
     source_dest_check: "{{source_dest_check}}"
+    state: "{{state}}"
     id: "{{id}}"
     wait: "{{wait}}"
   register: ec2_info

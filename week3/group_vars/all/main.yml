@@ -3,7 +3,7 @@
 # stack network settings
 stack_name: "HackOregon"
 owner: "hackoregon"
-state: "present"
+state: "{{ lookup('env', 'PROVISION_STATE') }}"
 disable_rollback: "yes"
 region: "{{ lookup('env', 'AWS_REGION') }}"
 keypair: "{{ lookup('env', 'KEYPAIR') }}"

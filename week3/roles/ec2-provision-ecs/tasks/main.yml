@@ -3,7 +3,7 @@
     ec2_group:
       description: SG for {{cluster_name}} ELB
       name: "{{cluster_name}}_ELBSG"
-      state: present
+      state: "{{state}}"
       region: "{{region}}"
       vpc_id: "{{vpc_id}}"
       rules:
@@ -21,7 +21,7 @@
     ec2_group:
       description: SG for {{cluster_name}} instance
       name: "{{cluster_name}}_instanceSG"
-      state: present
+      state: "{{state}}"
       region: "{{region}}"
       vpc_id: "{{vpc_id}}"
       rules:
@@ -42,12 +42,12 @@
   - name: create ecs cluster
     ecs_cluster:
       name: "{{cluster_name}}"
-      state: present
+      state: "{{state}}"
 
   - name: create ELB
     ec2_elb_lb:
       name: "{{cluster_name}}ELB"
-      state: present
+      state: "{{state}}"
       security_group_ids: "{{elb_sg_out.group_id}}"
       subnets:
         - "{{dmza_subnet_id}}"
@@ -106,7 +106,7 @@
       instance_type: "{{instance_type}}"
       instance_profile_name: "{{cluster_name}}-instance-role"
       region: "{{region}}"
-      state: present
+      state: "{{state}}"
       instance_monitoring: "{{instance_monitoring}}"
       user_data: |
         #!/bin/bash
@@ -124,6 +124,7 @@
       max_size: "{{max_size}}"
       desired_capacity: "{{desired_capacity}}"
       region: "{{region}}"
+      state: "{{state}}"
       load_balancers:
         - "{{cluster_name}}ELB"
       replace_all_instances: "{{replace_all_instances}}"
