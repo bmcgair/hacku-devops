@@ -1,0 +1,28 @@
+---
+- name: enable ip_forward
+  command: sysctl -w net.ipv4.ip_forward=1
+  changed_when: False
+
+- name: persist ip_forward
+  lineinfile: dest=/etc/sysctl.conf
+              regexp="^#net.ipv4.ip_forward=1"
+              line="net.ipv4.ip_forward=1"
+              state=present
+  changed_when: False
+
+- name: add ipfw rules
+  template: src=templates/iptables.up.rules.j2
+            dest=/etc/iptables.up.rules
+
+- name: enable ipfw rules on boot
+  blockinfile:
+    dest: /etc/network/if-pre-up.d/iptablesload
+    create: yes
+    mode: 755
+    block: |
+      #!/bin/sh
+      iptables-restore < /etc/iptables.up.rules
+      exit 0"
+
+- name: enable firewall
+  shell: "iptables-restore < /etc/iptables.up.rules"
