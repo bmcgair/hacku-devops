@@ -4,7 +4,7 @@
 #### Increment BASTION_ID to launch new box!  ####
 ### Otherwise script will behave idempotently ####
 ##################################################
-export BASTION_IDEMPOTENT_ID="05"
+export BASTION_IDEMPOTENT_ID="63"
 export PROVISION_STATE="present"
 
 export AWS_REGION="us-west-2"

@@ -4,18 +4,18 @@
 #### Increment BASTION_ID to launch new box!  ####
 ### Otherwise script will behave idempotently ####
 ##################################################
-export BASTION_IDEMPOTENT_ID="79"
-
+export BASTION_IDEMPOTENT_ID="65"
 export PROVISION_STATE="present"
 
-export AWS_REGION="us-east-1"
-export ZONEA="us-east-1a"
-export ZONEB="us-east-1b"
-export ZONEC="us-east-1e"
+export AWS_REGION="us-west-2"
+export ZONEA="us-west-2a"
+export ZONEB="us-west-2b"
+export ZONEC="us-west-2c"
 
-export VPC_BASE="10.20"
+export VPC_BASE="10.10"
 export KEYPAIR="xaas-or"
-export MGMT_IP="`curl -s icanhazip.com`/32"
+#export MGMT_IP="`curl -s icanhazip.com`/32"
+export MGMT_IP="24.21.200.124/32"
 
 /usr/local/bin/ansible-playbook -i contribl/ec2.py ./stage1.yml
 /usr/local/bin/ansible-playbook -i contribl/ec2.py ./stage2.yml
