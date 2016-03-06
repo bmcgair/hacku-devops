@@ -1,0 +1,57 @@
+#
+# Here are the basic steps to get this repo working
+
+1. Change names and values in group_vars/all/main.yml as appropriate to your organization.
+
+2. Copy/Edit the launchCluster.sh script to suit your region
+
+3. Install ansible: sudo pip install ansible
+
+4. Install boto 3: sudo pip install --ignore-installed six boto3
+
+5. Make sure you have an ec2 key in the region you're targeting:
+http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
+
+6. Add your keyfile.pem to your local ssh-agent:
+ssh-add /path/to/<keyfile>.pem
+
+7. Use ansible-vault to create the vault file:
+ansible-vault create group_vars/all/vault
+
+You need to define the variables below in the group_vars/all/vault file:
+All password hashes should be generated with: mkpasswd --method=SHA-512
+your pub_key can usually be found by: cat ~/.ssh/id_rsa.pub
+-------------------------------------------
+aws_access_key: xxxxxxxxxxxxxxxxxxxx
+aws_secret_key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+keypair: mykepair
+
+webmin_user: webmin
+webmin_passwd: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# Users are in a dictionary structure like so
+my_users:
+  user1:
+    group: "admin"
+    shell: "/bin/bash"
+    passwd: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    vpn_phrase: "TheVPNPassPhrase"
+    pub_key:  ssh-rsa xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  user2:
+    group: "wheel"
+    shell: "/bin/bash"
+    passwd: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    vpn_phrase: "AnotherVPNPassPhrase"
+    pub_key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+-------------------------------------------
+pub_key is the user's id_rsa.pub file. Just paste the whole contents of that file after pub_key:
+
+8. add the vault password you used in step 3 to ~/.vault_pass.txt. chmod 600 ~/.vault_pass.txt
+better still, encrypt your ansible vault password with gpg:
+http://benincosa.com/?p=3235
+
+9. Accept the license agreement for the amazon ecs optimized ami:
+https://aws.amazon.com/marketplace/pp/B00U6QTYI2
+
+10. From the repo root: ./launchCluster.sh

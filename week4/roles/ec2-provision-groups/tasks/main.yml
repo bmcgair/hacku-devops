@@ -1,0 +1,16 @@
+---
+- name: "create or modify Security Groups in {{vpc_id}}"
+  ec2_group:
+    state: present
+    name: "{{item.sg_name}}"
+    description: "{{item.sg_description}}"
+    region: "{{region}}"
+    vpc_id: "{{vpc_id}}"
+    rules: "{{item.sg_rules}}"
+    state: "{{state}}"
+    rules_egress:
+      - proto: all
+        from_port: -1
+        to_port: -1
+        cidr_ip: 0.0.0.0/0
+  with_items: security_groups
