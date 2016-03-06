@@ -72,7 +72,7 @@
     ignore_errors: yes
 
   - name: pause to let igw die
-    pause: seconds=60
+    pause: seconds=30
 
   - name: destroy vpc
     ec2_vpc:
