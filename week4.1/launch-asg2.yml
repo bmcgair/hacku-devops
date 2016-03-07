@@ -1,0 +1,81 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    region: "us-west-2"
+    asg_name: "myasg"
+    keypair: "xaas-or"
+    ami: "ami-9abea4fb"
+
+  tasks:
+    - include_vars: "{{playbook_dir}}/group_vars/{{region}}"
+
+    - name: create instance security_group
+      ec2_group:
+        description: SG for {{asg_name}} instance
+        name: "{{asg_name}}SG"
+        state: "present"
+        region: "{{region}}"
+        vpc_id: "{{vpc_id}}"
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: "0.0.0.0/0"
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: "0.0.0.0/0"
+          - proto: tcp
+            from_port: 443
+            to_port: 443
+            cidr_ip: "0.0.0.0/0"
+      register: instance_sg_out
+
+    - name: create launch config
+      ec2_lc:
+        name: "ansible-testLC"
+        image_id: "{{ami}}"
+        key_name: "{{keypair}}"
+        security_groups: "{{instance_sg_out.group_id}}"
+        instance_type: "t2.nano"
+        #instance_profile_name: "{{asg_name}}-instance-role"
+        region: "{{region}}"
+        state: "present"
+        instance_monitoring: "no"
+        user_data: |
+          #!/bin/bash -ex
+          apt-add-repository -y ppa:ansible/ansible
+          apt-get update
+          apt-get install -y -q python-paramiko python-yaml python-jinja2 python-simplejson git-core ansible
+          echo -e "[{{asg_name}}]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
+          ansible-pull -U https://github.com/bmcgair/pull-playbooks.git -d /etc/ansible/local-playbooks
+          exit 0
+      tags: "mytag"
+
+    - name: Create ASG
+      ec2_asg:
+        name: "ansible-testASG"
+        launch_config_name: "ansible-testLC"
+        health_check_period: "30"
+        health_check_type: "EC2"
+        min_size: "1"
+        max_size: "3"
+        desired_capacity: "1"
+        region: "{{region}}"
+        state: "present"
+        #load_balancers:
+        #  - "{{asg_name}}ELB"
+        replace_all_instances: "yes"
+        tags:
+          - Name: "Instance belongs to myasg"
+          - Owner: "billm"
+          - Role: "ECS"
+        vpc_zone_identifier:
+          - "{{privatea_subnet_id}}"
+          - "{{privateb_subnet_id}}"
+          - "{{privatec_subnet_id}}"
+      register:  asg_out

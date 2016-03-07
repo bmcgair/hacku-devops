@@ -1,0 +1,53 @@
+---
+- name: find ami
+  ec2_ami_find:
+    name: "{{image_name}}"
+    owner: "{{image_owner}}"
+    region: "{{region}}"
+    sort: name
+    sort_order: descending
+    sort_end: 1
+  register: ami_find
+
+- name: launch an ec2 instance
+  ec2:
+    instance_type: "{{instance_type}}"
+    count: "{{count}}"
+    image: "{{ami_find.results[0].ami_id}}"
+    region: "{{region}}"
+    vpc_subnet_id: "{{vpc_subnet_id}}"
+    keypair: "{{keypair}}"
+    group: "{{group}}"
+    assign_public_ip: "{{assign_public_ip}}"
+    instance_tags: "{{instance_tags}}"
+    source_dest_check: "{{source_dest_check}}"
+    state: "{{state}}"
+    id: "{{id}}"
+    wait: "{{wait}}"
+  register: ec2_info
+
+- debug: var=ec2_info
+
+- debug: var=item
+  with_items: ec2_info.instance_ids
+
+- add_host: hostname={{item.public_ip}} groupname=tag_Name_{{group}}
+  with_items: ec2_info.instances
+
+- debug: var=idempotent_id
+- set_fact:
+    bastion_instance: "{{item.id}}"
+  with_items: "{{ec2_info.instances}}"
+
+- name: update bastion_instance to {{bastion_instance}}
+  replace:
+     dest: "{{playbook_dir}}/group_vars/{{region}}"
+     regexp: "^bastion_instance:.*$"
+     replace: "bastion_instance: {{bastion_instance}}"
+
+- name: wait for instances to listen on port:22
+  wait_for:
+    state: started
+    host: "{{item.public_dns_name}}"
+    port: 22
+  with_items: ec2_info.instances
