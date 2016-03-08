@@ -1,7 +1,0 @@
----
-- name: add ansible repo
-  apt_repository: repo='apt-add-repository -y ppa:ansible/ansible' state=present update_cache=yes
-
-- name: install ansible deb
-  apt: name=ansible state=latest force=yes
-

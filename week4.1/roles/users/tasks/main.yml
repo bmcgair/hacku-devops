@@ -1,9 +1,0 @@
----
-- name: Create user
-  user: name={{item.key}} shell={{item.value.shell}}  groups={{item.value.group}} password={{item.value.passwd}} createhome=yes append=yes update_password=always
-  with_dict: "{{my_users}}"
-
-- name: add ssh pub key to authorized key
-  authorized_key: user={{item.key}} key={{item.value.pub_key}} state=present
-  with_dict: "{{my_users}}"
-

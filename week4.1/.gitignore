@@ -1,6 +1,0 @@
-group_vars/all/vault
-group_vars/tag_Name*
-group_vars/us-*
-.DS_Store
-*.DS_Store
-*/.DS_Store

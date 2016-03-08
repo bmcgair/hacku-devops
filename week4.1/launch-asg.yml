@@ -7,19 +7,11 @@
   vars:
     region: "us-west-2"
     asg_name: "myasg"
+    keypair: "xaas-or"
+    ami: "ami-9abea4fb"
 
   tasks:
     - include_vars: "{{playbook_dir}}/group_vars/{{region}}"
-
-    - name: find ami
-      ec2_ami_find:
-        name: "ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"
-        owner: "099720109477"
-        region: "{{region}}"
-        sort: name
-        sort_order: descending
-        sort_end: 1
-      register: ami_find
 
     - name: create instance security_group
       ec2_group:
@@ -46,7 +38,7 @@
     - name: create launch config
       ec2_lc:
         name: "ansible-testLC"
-        image_id: "{{ami_find.results[0].ami_id}}"
+        image_id: "{{ami}}"
         key_name: "{{keypair}}"
         security_groups: "{{instance_sg_out.group_id}}"
         instance_type: "t2.nano"
@@ -54,7 +46,6 @@
         region: "{{region}}"
         state: "present"
         instance_monitoring: "no"
-    #    user_data: |
       tags: "mytag"
 
     - name: Create ASG
@@ -68,8 +59,6 @@
         desired_capacity: "1"
         region: "{{region}}"
         state: "present"
-        #load_balancers:
-        #  - "{{asg_name}}ELB"
         replace_all_instances: "yes"
         tags:
           - Name: "Instance belongs to myasg"
