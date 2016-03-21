@@ -1,0 +1,43 @@
+.acre_div {
+	.topCategory {
+		font-size: $font-size--lg;
+		margin: .75em auto;
+	}
+	.btn-theme {
+		font-size: $font-size--lg;
+		font-weight: bold;
+		border-radius: .5em;
+		border: 3px solid $brand-tan--dark;
+		margin-right: 1rem;
+		color: $brand-tan--dark;
+		background: $brand-tan--light;
+		&:last-of-type {
+			margin-right: 0;
+		}
+		&:hover,
+		&:active,
+		&focus {
+			outline: 0;
+		}
+	}
+
+	.btn-theme-selected {
+		background: $brand-tan--dark;
+		color: $brand-tan--light;
+		outline: 0;
+	}
+}
+
+.bar-graph {
+	width: 75%;
+	margin-left: auto;
+	margin-right: auto;
+	font-size: xx-large;
+}
+
+.bar {
+	background-color: darken($brand-orange, 6.5%);
+	border-radius: $font-size--xs;
+	display: inline-block;
+	transition: width 1s;
+}

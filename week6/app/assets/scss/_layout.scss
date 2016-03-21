@@ -1,0 +1,35 @@
+body {
+  font-family: 'Roboto Slab', serif;
+  color: $font-color--dark;
+  background-color: $brand-tan;
+}
+
+main {
+  border-top: 1px solid $brand-tan--light;
+  border-bottom: 1px solid $brand-tan--dark;
+}
+
+main section {
+  border-top: 1px solid lighten($brand-tan, 5%);
+}
+
+main section .container {
+  padding: 1rem;
+  height: inherit;
+}
+
+main section:first-of-type {
+  border-top: 0;
+}
+
+main section h1 {
+  margin-top: 0;
+}
+
+table {
+  width: 100%;
+  margin-top: 1rem;
+}
+td {
+  padding: .5rem 0;
+}

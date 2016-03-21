@@ -1,0 +1,20 @@
+app:
+  restart: always
+  image: bmcgair/oragriculture_app
+  mem_limit: 268435456
+  cpu_shares: 256
+  ports:
+    - "80:80"
+  #user: root
+
+api:
+  restart: always
+  image: bmcgair/oragriculture_api
+  mem_limit: 268435456
+  cpu_shares: 256
+  ports:
+    - "8000:8000"
+  environment:
+    DBHOST: orag2.cdiwyyhvswzb.us-west-2.rds.amazonaws.com
+  #user: root
+

@@ -10,7 +10,6 @@
   tasks:
   - include_vars: "{{playbook_dir}}/group_vars/{{region}}"
 
-
   - name: destroy ASG
     ec2_asg:
       name: "{{cluster_name}}ASG"

@@ -1,0 +1,79 @@
+header {
+  background-color: $brand-tan--light;
+  border-bottom: 1px solid $brand-tan--dark;
+  text-align: center;
+}
+header .container {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  padding: 0;
+}
+header h1::before {
+  content: ' ';
+  display: inline-block;
+  height: 10vh;
+  width: 10vh;
+  vertical-align: top;
+  background: url('../images/carrot.svg');
+}
+header h1 {
+  align-self: flex-start;
+  margin: 0;
+  font-size: 5vh;
+  line-height: 1.825;
+  text-align: left;
+  }
+.orange {
+  color: $brand-orange;
+  }
+.green {
+  color: $brand-green;
+  }
+header a:hover,
+header a:active,
+header a:focus {
+  text-decoration: none;
+  border-bottom: 3px solid $brand-tan;
+}
+header div {
+  margin: 0 0 0 auto;
+}
+header div div {
+  display: inline-block;
+}
+header .btn {
+  font-size: 3vh;
+}
+header .btn:hover,
+header .btn:active,
+header .btn:focus {
+  outline: none;
+}
+header .btn-link {
+  color: $brand-tan--dark;
+  font-weight: bold;
+  border: 3px solid $brand-tan;
+  border-radius: .5em;
+}
+header .btn-link:hover,
+header .btn-link:active,
+header .btn-link:focus {
+  text-decoration: none;
+  color: $brand-tan--dark;
+  background: #fff;
+  border-color: $brand-tan--dark;
+  outline: none;
+}
+header i {
+  width: 6vh;
+  height: 6vh;
+  border: 3px solid $brand-tan--dark;
+  border-radius: 60px;
+  line-height: 1.75 !important;
+  margin-right: .75rem;
+
+}
+header i::before {
+  color: $brand-tan--dark;
+}

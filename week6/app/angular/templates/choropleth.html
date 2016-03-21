@@ -1,0 +1,73 @@
+<div ng-controller="choroplethCtrl" class="container">
+  <div class="row" id="choropleth-map">
+    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+      <!-- <button type="button" name="List Overlay" class="btn btn-round">
+        <i class="fa fa-clone">
+        </i>
+        <span class="sr-only">List Overlay</span>
+      </button> -->
+      <div class="map-legend">
+        <h4>Legend</h4>
+        <div ng-show="toggleIrrigated" class="irrigation-legend">
+          <h5>Land Capability</h5>
+          <ul>
+            <li>
+              <div class="legend-box" id="irr-2"></div> Class 2
+            </li>
+            <li>
+              <div class="legend-box" id="irr-3"></div> Class 3
+            </li>
+            <li>
+              <div class="legend-box" id="irr-4"></div> Class 4
+            </li>
+            <li>
+              <div class="legend-box" id="irr-5"></div> Class 5
+            </li>
+            <li>
+              <div class="legend-box" id="irr-6"></div> Class 6
+            </li>
+          </ul>
+        </div>
+        <div ng-show="toggleCropsGrowing" class="all-crops-legend">
+          <ul>
+            <li>
+              <div class="legend-box" id="crop-legend-box"></div> All Field Crops
+            </li>
+          </ul>
+        </div>
+        <div ng-show="selection" >
+          <ul>
+            <li>
+              <div class="legend-box" id="selected-crop-legend-box"></div>
+              <span ng-hide="!selection || selection.commodity.CDL_name === 'any'">{{selection.commodity.CDL_name}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="overlay-wrapper col-xs-12 col-sm-8 col-md-8 col-lg-8">
+      <img src="assets/images/maps/county_outlines-aligned.png" alt="county outlines map" height="400" />
+      <div class="irrigated-map col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <img ng-show="toggleIrrigated" src="assets/images/maps/irrigatedlandcapability_range-aligned.png" alt="land capability map" height="400" />
+      </div>
+      <div class="crops-map col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <img ng-show="toggleCropsGrowing" src="assets/images/maps/all_crops_from_CDL_2012-aligned.png" alt="all crops map" height="400" />
+      </div>
+      <div class="selected-crop-map col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <img ng-src="http://beta.cropcompass.org/assets/images/maps/CDL/{{selection.commodity.CDL_name}}.svg" height="400" />
+      </div>
+    </div>
+    <div id="choropleth-type-selectors" class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+      <button ng-click="toggleIrrigated = !toggleIrrigated; showMapInfo(0)" type="button" name="button" class="btn btn-choropleth">Land Capability</button>
+      <button ng-click="toggleCropsGrowing = !toggleCropsGrowing; showMapInfo(1)" type="button" name="button" class="btn btn-choropleth">Where crops are growing</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-offset-1 col-xs-10">
+      <div ng-show="toggleIrrigated || toggleCropsGrowing" class="map-info">
+        <h3>{{currentMapName}}</h3>
+        <p>{{currentMapDescription}}</p>
+      </div>
+    </div>
+  </div>
+</div>
