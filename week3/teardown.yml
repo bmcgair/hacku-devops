@@ -1,0 +1,96 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    cluster_name: "{{ lookup('env', 'CLUSTER_NAME') }}"
+
+  tasks:
+  - include_vars: "{{playbook_dir}}/group_vars/{{region}}"
+
+
+  - name: destroy ASG
+    ec2_asg:
+      name: "{{cluster_name}}ASG"
+      region: "{{region}}"
+      state: "{{state}}"
+    ignore_errors: yes
+
+  - name: destroy launch config
+    ec2_lc:
+      name: "{{cluster_name}}LC"
+      region: "{{region}}"
+      state: "{{state}}"
+    ignore_errors: yes
+
+  - name: destroy elb
+    ec2_elb_lb:
+      name: "{{cluster_name}}ELB"
+      region: "{{region}}"
+      state: "{{state}}"
+    ignore_errors: yes
+
+  - name: terminate ECS cluster
+    ecs_cluster:
+      name: "{{cluster_name}}"
+      state: "{{state}}"
+    ignore_errors: yes
+
+
+  - name: terminate bastion instance
+    ec2:
+      region: "{{region}}"
+      state: "{{state}}"
+      instance_ids: "{{bastion_instance}}"
+    ignore_errors: yes
+
+  - name: pause to let bastion die
+    pause: seconds=30
+
+  - name: release eip
+    ec2_eip:
+      state: "{{state}}"
+      region: "{{region}}"
+      ip: "{{vpn_ip}}"
+    ignore_errors: yes
+
+  - name: destroy security groups
+    shell: | #!/bin/bash
+             SECGROUPS=`/usr/local/bin/aws ec2 describe-security-groups --output text|grep SECURITYGROUPS| cut -f 3`
+             for group in $SECGROUPS; do
+               /usr/local/bin/aws ec2 delete-security-group --group-id $group
+             done
+    ignore_errors: yes
+
+  - name: destroy igw
+    ec2_vpc_igw:
+      state: "{{state}}"
+      region: "{{region}}"
+      vpc_id: "{{vpc_id}}"
+    ignore_errors: yes
+
+  - name: pause to let igw die
+    pause: seconds=60
+
+  - name: destroy vpc
+    ec2_vpc:
+      state: "{{state}}"
+      region: "{{region}}"
+      vpc_id: "{{vpc_id}}"
+      resource_tags: "{ }"
+
+  - name: destroy cloudformation stack
+    cloudformation:
+      stack_name: "{{stack_name}}-stack"
+      region: "{{region}}"
+      state: "{{state}}"
+      template_url: "its a bug"
+    ignore_errors: yes
+
+  - name: rm local vars
+    file: path="{{playbook_dir}}/group_vars/{{region}}" state={{state}}
+    ignore_errors: yes
+
+  - debug: msg="Don't forget to increment BASTION_ID!!!!!"

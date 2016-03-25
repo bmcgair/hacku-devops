@@ -1,0 +1,23 @@
+@import 'vars';
+@import 'foundation';
+@import 'keyframes';
+@import 'scaffolding';
+@import 'layout';
+@import 'header';
+@import 'typography';
+@import 'radial.directive';
+@import 'navbar';
+@import 'choropleth';
+@import 'footer';
+@import 'modal';
+@import 'topFiveAcres';
+@import 'legends';
+@import 'charts';
+
+.fa-rotate-225 {
+  -webkit-transform: rotate(225deg);
+  -moz-transform: rotate(225deg);
+  -ms-transform: rotate(225deg);
+  -o-transform: rotate(225deg);
+  transform: rotate(225deg);
+}

@@ -1,0 +1,11 @@
+---
+- name: snapping an ami from {{ec2_info.instance_ids[0]}}
+  ec2_ami: wait=yes
+           aws_access_key={{aws_access_key}}
+           aws_secret_key={{aws_secret_key }}
+           instance_id={{ec2_info.instance_ids[0]}}
+           region={{region}}
+           name={{ami_name}}
+
+  register: instance
+- debug: msg=" AMI id {{instance.image_id}}"

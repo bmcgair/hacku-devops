@@ -1,0 +1,42 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    idempotent_id: "{{ lookup('env', 'BASTION_IDEMPOTENT_ID') }}"
+    instance_type: t2.nano
+    count: 1
+    assign_public_ip: yes
+    image_name: "ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"
+    image_owner: "099720109477"
+    wait: yes
+    instance_tags: '{"Name":"{{application}}_{{owner}}","Role":"{{application}}"}'
+    source_dest_check: "no"
+    application: natvpn
+    owner: hackoregon
+    bastion_group: '{{application}}_{{owner}}'
+    id: "{{bastion_group}}{{idempotent_id}}}"
+
+  pre_tasks:
+    - include_vars: "{{playbook_dir}}/group_vars/{{region}}"
+
+  roles:
+    - { role: ec2-provision-groups }
+    - { role: ec2-provision-bastion, vpc_subnet_id: "{{dmza_subnet_id}}", group: "{{bastion_group}}" }
+
+- name: Configure natvpn instance(s)
+  hosts: tag_Name_natvpn_hackoregon
+  user: ubuntu
+  become: yes
+  vars:
+    region: "{{ lookup('env', 'AWS_REGION') }}"
+
+  pre_tasks:
+    - include_vars: "{{playbook_dir}}/group_vars/{{region}}"
+  roles:
+    - webmin
+    - iptables
+    - makevpn
+    - vpnusers
